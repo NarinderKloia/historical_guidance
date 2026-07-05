@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
+import 'core/database/database_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const HistoricalGuidanceApp());
+  // Initialize SQLite database
+  await DatabaseService.instance.database;
+
+  runApp(const ProviderScope(child: HistoricalGuidanceApp()));
 }
