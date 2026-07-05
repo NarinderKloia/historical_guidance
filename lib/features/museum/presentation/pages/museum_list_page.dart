@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:historical_guidance/features/gallery/presentation/pages/gallery_list_page.dart';
+
+import 'package:historical_guidance/shared/widgets/action_popup_menu.dart';
+import 'package:historical_guidance/shared/widgets/app_card.dart';
+import 'package:historical_guidance/shared/widgets/app_empty.dart';
+import 'package:historical_guidance/shared/widgets/app_loading.dart';
+import 'package:historical_guidance/shared/widgets/confirm_dialog.dart';
 
 import '../controllers/museum_controller.dart';
 import '../../data/models/museum_model.dart';
 import 'add_museum_page.dart';
+import 'edit_museum_page.dart';
 
 class MuseumListPage extends StatefulWidget {
   const MuseumListPage({super.key});
@@ -14,6 +22,10 @@ class MuseumListPage extends StatefulWidget {
 class _MuseumListPageState extends State<MuseumListPage> {
   final MuseumController _controller = MuseumController.instance;
 
+  Future<void> _refresh() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +34,7 @@ class _MuseumListPageState extends State<MuseumListPage> {
         future: _controller.getMuseums(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoading(message: "Loading museums...");
           }
 
           if (snapshot.hasError) {
@@ -32,8 +44,9 @@ class _MuseumListPageState extends State<MuseumListPage> {
           final museums = snapshot.data ?? [];
 
           if (museums.isEmpty) {
-            return const Center(
-              child: Text("No museums found.", style: TextStyle(fontSize: 18)),
+            return const AppEmpty(
+              title: "No museums found",
+              icon: Icons.account_balance,
             );
           }
 
@@ -42,12 +55,62 @@ class _MuseumListPageState extends State<MuseumListPage> {
             itemBuilder: (context, index) {
               final museum = museums[index];
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              return AppCard(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GalleryListPage(museum: museum),
+                    ),
+                  );
+
+                  _refresh();
+                },
                 child: ListTile(
-                  leading: const Icon(Icons.account_balance),
-                  title: Text(museum.museumName),
-                  subtitle: Text(museum.city),
+                  // -------------------------
+                  // Edit / Delete Menu
+                  // -------------------------
+                  trailing: ActionPopupMenu(
+                    onSelected: (action) async {
+                      switch (action) {
+                        case PopupAction.edit:
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditMuseumPage(museum: museum),
+                            ),
+                          );
+
+                          if (result == true) {
+                            _refresh();
+                          }
+                          break;
+
+                        case PopupAction.delete:
+                          final confirm = await ConfirmDialog.show(
+                            context: context,
+                            title: "Delete Museum",
+                            message:
+                                "Are you sure you want to delete '${museum.museumName}'?",
+                          );
+
+                          if (confirm) {
+                            await _controller.deleteMuseum(museum.id!);
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Museum deleted successfully"),
+                              ),
+                            );
+
+                            _refresh();
+                          }
+                          break;
+                      }
+                    },
+                  ),
                 ),
               );
             },
@@ -62,7 +125,7 @@ class _MuseumListPageState extends State<MuseumListPage> {
           );
 
           if (result == true) {
-            setState(() {});
+            _refresh();
           }
         },
         child: const Icon(Icons.add),

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:historical_guidance/shared/widgets/app_form_page.dart';
+import 'package:historical_guidance/shared/widgets/app_primary_button.dart';
+import 'package:historical_guidance/shared/widgets/app_scaffold.dart';
+import 'package:historical_guidance/shared/widgets/app_snackbar.dart';
+import 'package:historical_guidance/shared/widgets/app_text_field.dart';
 
 import '../../data/models/museum_model.dart';
 import '../controllers/museum_controller.dart';
@@ -38,76 +43,91 @@ class _AddMuseumPageState extends State<AddMuseumPage> {
       _isSaving = true;
     });
 
-    final now = DateTime.now().toIso8601String();
+    try {
+      final now = DateTime.now().toIso8601String();
 
-    final museum = MuseumModel(
-      id: null,
-      museumName: _nameController.text.trim(),
-      city: _cityController.text.trim(),
-      museumDescription: _descriptionController.text.trim(),
-      createdAt: now,
-      updatedAt: now,
-    );
+      final museum = MuseumModel(
+        id: null,
+        museumName: _nameController.text.trim(),
+        city: _cityController.text.trim(),
+        museumDescription: _descriptionController.text.trim(),
+        createdAt: now,
+        updatedAt: now,
+      );
 
-    await _controller.addMuseum(museum);
+      await _controller.addMuseum(museum);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    Navigator.pop(context, true);
+      AppSnackbar.success(context, "Museum added successfully");
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+
+      AppSnackbar.error(context, "Failed to save museum");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Add Museum")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+    return AppScaffold(
+      title: "Add Museum",
+      body: AppFormPage(
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
+              AppTextField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: "Museum Name"),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "Museum name is required"
-                    : null,
+                label: "Museum Name",
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Museum name is required";
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 16),
 
-              TextFormField(
+              AppTextField(
                 controller: _cityController,
-                decoration: const InputDecoration(labelText: "City"),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "City is required"
-                    : null,
+                label: "City",
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "City is required";
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 16),
 
-              TextFormField(
+              AppTextField(
                 controller: _descriptionController,
+                label: "Description",
                 maxLines: 4,
-                decoration: const InputDecoration(labelText: "Description"),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "Description is required"
-                    : null,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Description is required";
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 30),
 
-              SizedBox(
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _saveMuseum,
-                  child: _isSaving
-                      ? const CircularProgressIndicator()
-                      : const Text(
-                          "Save Museum",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                ),
+              AppPrimaryButton(
+                text: "Save Museum",
+                isLoading: _isSaving,
+                onPressed: _saveMuseum,
               ),
             ],
           ),

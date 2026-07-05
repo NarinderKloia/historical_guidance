@@ -16,11 +16,11 @@ class MuseumController {
     return _repository.insertMuseum(museum);
   }
 
-  Future<int> updateMuseum(MuseumModel museum) {
-    return _repository.updateMuseum(museum);
+  Future<void> updateMuseum(MuseumModel museum) async {
+    await _repository.updateMuseum(museum);
   }
 
-  Future<int> deleteMuseum(int id) {
-    return _repository.deleteMuseum(id);
+  Future<void> deleteMuseum(int id) async {
+    await _repository.deleteMuseum(id);
   }
 }

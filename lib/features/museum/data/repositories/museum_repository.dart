@@ -61,9 +61,9 @@ class MuseumRepository {
   // ==========================================================
 
   Future<int> updateMuseum(MuseumModel museum) async {
-    final db = await _db;
+    final db = await DatabaseService.instance.database;
 
-    return await db.update(
+    return db.update(
       DatabaseConstants.museumTable,
       museum.toMap(),
       where: '${DatabaseConstants.id} = ?',
@@ -76,9 +76,9 @@ class MuseumRepository {
   // ==========================================================
 
   Future<int> deleteMuseum(int id) async {
-    final db = await _db;
+    final db = await DatabaseService.instance.database;
 
-    return await db.delete(
+    return db.delete(
       DatabaseConstants.museumTable,
       where: '${DatabaseConstants.id} = ?',
       whereArgs: [id],
