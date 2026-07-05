@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../museum/presentation/pages/museum_list_page.dart';
 
 class SenderDashboardPage extends StatelessWidget {
   const SenderDashboardPage({super.key});
@@ -14,7 +15,12 @@ class SenderDashboardPage extends StatelessWidget {
             DashboardButton(
               title: "Manage Museums",
               icon: Icons.account_balance,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MuseumListPage()),
+                );
+              },
             ),
 
             const SizedBox(height: 16),
