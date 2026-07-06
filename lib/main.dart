@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'features/museum/data/models/museum_model.dart';
 import 'features/museum/data/repositories/museum_repository.dart';
 import 'features/sender/presentation/pages/sender_dashboard_page.dart';
+import 'core/services/nearby/presentation/pages/sender_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: const SenderDashboardPage());
+    return const MaterialApp(home: const SenderPage());
   }
 }

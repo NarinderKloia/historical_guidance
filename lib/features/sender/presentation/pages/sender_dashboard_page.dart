@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../museum/presentation/pages/museum_list_page.dart';
 import '../../../beacon/presentation/pages/beacon_list_page.dart';
+import '../../../qr/presentation/pages/generate_qr_page.dart';
 
 class SenderDashboardPage extends StatelessWidget {
   const SenderDashboardPage({super.key});
@@ -76,9 +77,10 @@ class SenderDashboardPage extends StatelessWidget {
               title: "Generate QR",
               icon: Icons.qr_code,
               onTap: () {
-                ScaffoldMessenger.of(
+                Navigator.push(
                   context,
-                ).showSnackBar(const SnackBar(content: Text("Coming soon")));
+                  MaterialPageRoute(builder: (_) => const GenerateQrPage()),
+                );
               },
             ),
           ],

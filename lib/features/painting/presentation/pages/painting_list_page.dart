@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/action_popup_menu.dart';
@@ -63,11 +65,35 @@ class _PaintingListPageState extends State<PaintingListPage> {
 
               return AppCard(
                 child: ListTile(
-                  leading: const Icon(Icons.palette),
+                  leading: painting.imagePath != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(painting.imagePath!),
+                            width: 55,
+                            height: 55,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return const Icon(Icons.palette, size: 40);
+                            },
+                          ),
+                        )
+                      : const Icon(Icons.palette, size: 40),
 
                   title: Text(painting.title),
 
-                  subtitle: Text("${painting.artist} • ${painting.year}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("${painting.artist} • ${painting.year}"),
+
+                      if (painting.beaconId != null)
+                        Text(
+                          "Beacon ID: ${painting.beaconId}",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                    ],
+                  ),
 
                   trailing: ActionPopupMenu(
                     onSelected: (action) async {
@@ -91,7 +117,7 @@ class _PaintingListPageState extends State<PaintingListPage> {
                           final confirm = await ConfirmDialog.show(
                             context: context,
                             title: "Delete Painting",
-                            message: "Delete '${painting.title}' ?",
+                            message: "Delete '${painting.title}' permanently?",
                           );
 
                           if (!confirm) return;
@@ -119,7 +145,6 @@ class _PaintingListPageState extends State<PaintingListPage> {
 
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-
         onPressed: () async {
           final result = await Navigator.push(
             context,

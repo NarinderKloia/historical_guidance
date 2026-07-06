@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet (not required now, but useful for future updates) -->
+    <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- Camera (QR Scanner) -->
+    <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <!-- Bluetooth (Android 11 and below) -->
@@ -15,13 +15,25 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
 
-    <!-- Location (required for BLE scanning on Android 11 and below) -->
+    <!-- Nearby WiFi (Android 13+) -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"/>
+
+    <!-- Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <!-- BLE Features -->
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false"/>
+
     <application
-        android:label="Historical Guidance"
         android:name="${applicationName}"
+        android:label="Historical Guidance"
         android:icon="@mipmap/ic_launcher">
 
         <activity

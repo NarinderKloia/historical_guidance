@@ -8,27 +8,59 @@ class PaintingController {
 
   final PaintingRepository _repository = PaintingRepository.instance;
 
-  Future<int> addPainting(PaintingModel painting) {
-    return _repository.insertPainting(painting);
+  // ==========================================================
+  // Add Painting
+  // ==========================================================
+
+  Future<int> addPainting(PaintingModel painting) async {
+    return await _repository.insertPainting(painting);
   }
 
-  Future<List<PaintingModel>> getPaintings(int galleryId) {
-    return _repository.getPaintingsByGallery(galleryId);
+  // ==========================================================
+  // Get Painting By ID
+  // ==========================================================
+
+  Future<PaintingModel?> getPainting(int id) async {
+    return await _repository.getPaintingById(id);
   }
 
-  Future<PaintingModel?> getPainting(int id) {
-    return _repository.getPaintingById(id);
+  // ==========================================================
+  // Get Paintings By Gallery
+  // ==========================================================
+
+  Future<List<PaintingModel>> getPaintings(int galleryId) async {
+    return await _repository.getPaintingsByGallery(galleryId);
   }
 
-  Future<int> updatePainting(PaintingModel painting) {
-    return _repository.updatePainting(painting);
+  // ==========================================================
+  // Get All Paintings
+  // ==========================================================
+
+  Future<List<PaintingModel>> getAllPaintings() async {
+    return await _repository.getAllPaintings();
   }
 
-  Future<int> deletePainting(int id) {
-    return _repository.deletePainting(id);
+  // ==========================================================
+  // Update Painting
+  // ==========================================================
+
+  Future<int> updatePainting(PaintingModel painting) async {
+    return await _repository.updatePainting(painting);
   }
 
-  Future<bool> isBeaconAssigned(int beaconId) {
-    return _repository.isBeaconAssigned(beaconId: beaconId);
+  // ==========================================================
+  // Delete Painting
+  // ==========================================================
+
+  Future<int> deletePainting(int id) async {
+    return await _repository.deletePainting(id);
+  }
+
+  // ==========================================================
+  // Check Beacon Assignment
+  // ==========================================================
+
+  Future<bool> isBeaconAssigned(int beaconId) async {
+    return await _repository.isBeaconAssigned(beaconId: beaconId);
   }
 }

@@ -23,11 +23,6 @@ class DatabaseService {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, DatabaseConstants.databaseName);
 
-    // ==========================================================
-    // DEVELOPMENT ONLY
-    // Delete database every run while schema is under development.
-    // REMOVE THIS LINE BEFORE RELEASE.
-    // ==========================================================
     await deleteDatabase(path);
 
     return await openDatabase(
