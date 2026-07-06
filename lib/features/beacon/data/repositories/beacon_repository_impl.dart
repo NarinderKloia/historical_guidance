@@ -1,8 +1,8 @@
+import 'package:historical_guidance/features/beacon/data/repositories/beacon_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/database/database_constants.dart';
 import '../../../../core/database/database_service.dart';
-import '../../domain/repositories/beacon_repository.dart';
 import '../models/beacon_model.dart';
 
 class BeaconRepositoryImpl implements BeaconRepository {
@@ -65,5 +65,39 @@ class BeaconRepositoryImpl implements BeaconRepository {
       where: '${DatabaseConstants.id} = ?',
       whereArgs: [id],
     );
+  }
+
+  @override
+  Future<BeaconModel?> getBeaconByIdentity({
+    required String uuid,
+    required int major,
+    required int minor,
+  }) {
+    // TODO: implement getBeaconByIdentity
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> beaconExists({
+    required String uuid,
+    required int major,
+    required int minor,
+  }) {
+    // TODO: implement beaconExists
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<BeaconModel>> getUnassignedBeacons() {
+    // TODO: implement getUnassignedBeacons
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<BeaconModel>> getAvailableBeaconsForPainting(
+    int? currentBeaconId,
+  ) {
+    // TODO: implement getAvailableBeaconsForPainting
+    throw UnimplementedError();
   }
 }

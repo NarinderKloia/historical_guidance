@@ -11,81 +11,23 @@ class PaintingRepository {
 
   Future<Database> get _db async => DatabaseService.instance.database;
 
-  // ==========================================================
-  // Insert Painting
-  // ==========================================================
-
-  Future<int> insertPainting(PaintingModel painting) async {
-    final db = await _db;
-
-    return await db.insert(DatabaseConstants.paintingTable, painting.toMap());
-  }
-
-  // ==========================================================
-  // Get Painting By ID
-  // ==========================================================
-
-  Future<PaintingModel?> getPaintingById(int id) async {
-    final db = await _db;
-
-    final result = await db.query(
-      DatabaseConstants.paintingTable,
-      where: '${DatabaseConstants.id} = ?',
-      whereArgs: [id],
-    );
-
-    if (result.isEmpty) {
-      return null;
-    }
-
-    return PaintingModel.fromMap(result.first);
-  }
-
-  // ==========================================================
-  // Get Paintings By Gallery
-  // ==========================================================
-
-  Future<List<PaintingModel>> getPaintingsByGallery(int galleryId) async {
-    final db = await _db;
-
-    final result = await db.query(
-      DatabaseConstants.paintingTable,
-      where: '${DatabaseConstants.galleryId} = ?',
-      whereArgs: [galleryId],
-      orderBy: DatabaseConstants.title,
-    );
-
-    return result.map((e) => PaintingModel.fromMap(e)).toList();
-  }
-
-  // ==========================================================
-  // Get Painting By Beacon ID
-  // ==========================================================
-
-  Future<PaintingModel?> getPaintingByBeaconId(int beaconId) async {
-    final db = await _db;
-
-    final result = await db.query(
-      DatabaseConstants.paintingTable,
-      where: 'beaconId = ?',
-      whereArgs: [beaconId],
-    );
-
-    if (result.isEmpty) {
-      return null;
-    }
-
-    return PaintingModel.fromMap(result.first);
-  }
-
-  // ==========================================================
-  // Update Painting
-  // ==========================================================
-
   Future<int> updatePainting(PaintingModel painting) async {
     final db = await _db;
 
-    return await db.update(
+    if (painting.beaconId != null) {
+      final duplicate = await db.query(
+        DatabaseConstants.paintingTable,
+        where:
+            '${DatabaseConstants.beaconId} = ? AND ${DatabaseConstants.id} != ?',
+        whereArgs: [painting.beaconId, painting.id],
+      );
+
+      if (duplicate.isNotEmpty) {
+        throw Exception("This beacon is already assigned.");
+      }
+    }
+
+    return db.update(
       DatabaseConstants.paintingTable,
       painting.toMap(),
       where: '${DatabaseConstants.id} = ?',
@@ -94,15 +36,82 @@ class PaintingRepository {
   }
 
   // ==========================================================
-  // Delete Painting
+  // Get By ID
+  // ==========================================================
+
+  Future<PaintingModel?> getPaintingById(int id) async {
+    final db = await _db;
+
+    final result = await db.query(
+      DatabaseConstants.paintingTable,
+      where: '${DatabaseConstants.id}=?',
+      whereArgs: [id],
+    );
+
+    if (result.isEmpty) return null;
+
+    return PaintingModel.fromMap(result.first);
+  }
+
+  // ==========================================================
+  // Get By Gallery
+  // ==========================================================
+
+  Future<List<PaintingModel>> getPaintingsByGallery(int galleryId) async {
+    final db = await _db;
+
+    final result = await db.query(
+      DatabaseConstants.paintingTable,
+      where: '${DatabaseConstants.galleryId}=?',
+      whereArgs: [galleryId],
+      orderBy: DatabaseConstants.title,
+    );
+
+    return result.map(PaintingModel.fromMap).toList();
+  }
+
+  // ==========================================================
+  // Beacon Assigned?
+  // ==========================================================
+
+  Future<bool> isBeaconAssigned({required int beaconId}) async {
+    final db = await _db;
+
+    final result = await db.query(
+      DatabaseConstants.paintingTable,
+      columns: [DatabaseConstants.id],
+      where: '${DatabaseConstants.beaconId}=?',
+      whereArgs: [beaconId],
+      limit: 1,
+    );
+
+    return result.isNotEmpty;
+  }
+
+  Future<int> insertPainting(PaintingModel painting) async {
+    final db = await _db;
+
+    if (painting.beaconId != null) {
+      final exists = await isBeaconAssigned(beaconId: painting.beaconId!);
+
+      if (exists) {
+        throw Exception("This beacon is already assigned to another painting.");
+      }
+    }
+
+    return db.insert(DatabaseConstants.paintingTable, painting.toMap());
+  }
+
+  // ==========================================================
+  // Delete
   // ==========================================================
 
   Future<int> deletePainting(int id) async {
     final db = await _db;
 
-    return await db.delete(
+    return db.delete(
       DatabaseConstants.paintingTable,
-      where: '${DatabaseConstants.id} = ?',
+      where: '${DatabaseConstants.id}=?',
       whereArgs: [id],
     );
   }

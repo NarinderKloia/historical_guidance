@@ -5,7 +5,7 @@ import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_empty.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../../../shared/widgets/confirm_dialog.dart';
-
+import '../../../painting/presentation/pages/painting_list_page.dart';
 import '../../../museum/data/models/museum_model.dart';
 
 import '../../data/models/gallery_model.dart';
@@ -108,7 +108,12 @@ class _GalleryListPageState extends State<GalleryListPage> {
                   //   },
                   // ),
                   onTap: () {
-                    // Painting List (next module)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaintingListPage(gallery: gallery),
+                      ),
+                    );
                   },
                 ),
               );

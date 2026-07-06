@@ -106,32 +106,33 @@ class DatabaseService {
     // ==========================================================
 
     await db.execute('''
-      CREATE TABLE ${DatabaseConstants.paintingTable} (
-        ${DatabaseConstants.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+  CREATE TABLE ${DatabaseConstants.paintingTable} (
+    ${DatabaseConstants.id} INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        ${DatabaseConstants.galleryId} INTEGER NOT NULL,
-        ${DatabaseConstants.beaconId} INTEGER NOT NULL,
+    ${DatabaseConstants.galleryId} INTEGER NOT NULL,
 
-        ${DatabaseConstants.title} TEXT NOT NULL,
-        ${DatabaseConstants.artist} TEXT NOT NULL,
-        ${DatabaseConstants.year} TEXT NOT NULL,
-        ${DatabaseConstants.paintingDescription} TEXT NOT NULL,
+    ${DatabaseConstants.beaconId} INTEGER,
 
-        ${DatabaseConstants.imagePath} TEXT NOT NULL,
-        ${DatabaseConstants.audioPath} TEXT NOT NULL,
+    ${DatabaseConstants.title} TEXT NOT NULL,
+    ${DatabaseConstants.artist} TEXT NOT NULL,
+    ${DatabaseConstants.year} TEXT NOT NULL,
+    ${DatabaseConstants.paintingDescription} TEXT NOT NULL,
 
-        ${DatabaseConstants.createdAt} TEXT NOT NULL,
-        ${DatabaseConstants.updatedAt} TEXT NOT NULL,
+    ${DatabaseConstants.imagePath} TEXT,
+    ${DatabaseConstants.audioPath} TEXT,
 
-        FOREIGN KEY (${DatabaseConstants.galleryId})
-            REFERENCES ${DatabaseConstants.galleryTable}(${DatabaseConstants.id})
-            ON DELETE CASCADE,
+    ${DatabaseConstants.createdAt} TEXT NOT NULL,
+    ${DatabaseConstants.updatedAt} TEXT NOT NULL,
 
-        FOREIGN KEY (${DatabaseConstants.beaconId})
-            REFERENCES ${DatabaseConstants.beaconTable}(${DatabaseConstants.id})
-            ON DELETE CASCADE
-      )
-    ''');
+    FOREIGN KEY (${DatabaseConstants.galleryId})
+        REFERENCES ${DatabaseConstants.galleryTable}(${DatabaseConstants.id})
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (${DatabaseConstants.beaconId})
+        REFERENCES ${DatabaseConstants.beaconTable}(${DatabaseConstants.id})
+        ON DELETE SET NULL
+  )
+''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {

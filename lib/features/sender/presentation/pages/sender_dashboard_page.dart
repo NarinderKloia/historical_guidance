@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../museum/presentation/pages/museum_list_page.dart';
+import '../../../beacon/presentation/pages/beacon_list_page.dart';
 
 class SenderDashboardPage extends StatelessWidget {
   const SenderDashboardPage({super.key});
@@ -28,7 +30,15 @@ class SenderDashboardPage extends StatelessWidget {
             DashboardButton(
               title: "Manage Galleries",
               icon: Icons.collections,
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Open a museum first to manage its galleries.",
+                    ),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 16),
@@ -36,7 +46,15 @@ class SenderDashboardPage extends StatelessWidget {
             DashboardButton(
               title: "Manage Paintings",
               icon: Icons.image,
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Open a gallery first to manage its paintings.",
+                    ),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 16),
@@ -44,7 +62,12 @@ class SenderDashboardPage extends StatelessWidget {
             DashboardButton(
               title: "Manage Beacons",
               icon: Icons.bluetooth,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BeaconListPage()),
+                );
+              },
             ),
 
             const SizedBox(height: 16),
@@ -52,7 +75,11 @@ class SenderDashboardPage extends StatelessWidget {
             DashboardButton(
               title: "Generate QR",
               icon: Icons.qr_code,
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text("Coming soon")));
+              },
             ),
           ],
         ),

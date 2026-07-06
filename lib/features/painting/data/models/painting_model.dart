@@ -4,15 +4,20 @@ class PaintingModel {
   final int? id;
 
   final int galleryId;
-  final int beaconId;
+
+  /// Nullable because a beacon may be assigned later.
+  final int? beaconId;
 
   final String title;
   final String artist;
   final String year;
   final String paintingDescription;
 
-  final String imagePath;
-  final String audioPath;
+  /// Nullable because image may be added later.
+  final String? imagePath;
+
+  /// Nullable because audio may be added later.
+  final String? audioPath;
 
   final String createdAt;
   final String updatedAt;
@@ -20,13 +25,13 @@ class PaintingModel {
   const PaintingModel({
     this.id,
     required this.galleryId,
-    required this.beaconId,
+    this.beaconId,
     required this.title,
     required this.artist,
     required this.year,
     required this.paintingDescription,
-    required this.imagePath,
-    required this.audioPath,
+    this.imagePath,
+    this.audioPath,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -49,47 +54,55 @@ class PaintingModel {
 
   factory PaintingModel.fromMap(Map<String, dynamic> map) {
     return PaintingModel(
-      id: map[DatabaseConstants.id],
-      galleryId: map[DatabaseConstants.galleryId],
-      beaconId: map[DatabaseConstants.beaconId],
-      title: map[DatabaseConstants.title],
-      artist: map[DatabaseConstants.artist],
-      year: map[DatabaseConstants.year],
-      paintingDescription: map[DatabaseConstants.paintingDescription],
-      imagePath: map[DatabaseConstants.imagePath],
-      audioPath: map[DatabaseConstants.audioPath],
-      createdAt: map[DatabaseConstants.createdAt],
-      updatedAt: map[DatabaseConstants.updatedAt],
+      id: map[DatabaseConstants.id] as int?,
+      galleryId: map[DatabaseConstants.galleryId] as int,
+      beaconId: map[DatabaseConstants.beaconId] as int?,
+      title: map[DatabaseConstants.title] as String,
+      artist: map[DatabaseConstants.artist] as String,
+      year: map[DatabaseConstants.year] as String,
+      paintingDescription: map[DatabaseConstants.paintingDescription] as String,
+      imagePath: map[DatabaseConstants.imagePath] as String?,
+      audioPath: map[DatabaseConstants.audioPath] as String?,
+      createdAt: map[DatabaseConstants.createdAt] as String,
+      updatedAt: map[DatabaseConstants.updatedAt] as String,
     );
   }
 
   PaintingModel copyWith({
     int? id,
     int? galleryId,
-    int? beaconId,
+    Object? beaconId = null,
     String? title,
     String? artist,
     String? year,
     String? paintingDescription,
-    String? imagePath,
-    String? audioPath,
+    Object? imagePath = null,
+    Object? audioPath = null,
     String? createdAt,
     String? updatedAt,
   }) {
     return PaintingModel(
       id: id ?? this.id,
       galleryId: galleryId ?? this.galleryId,
-      beaconId: beaconId ?? this.beaconId,
+      beaconId: identical(beaconId, _noChange)
+          ? this.beaconId
+          : beaconId as int?,
       title: title ?? this.title,
       artist: artist ?? this.artist,
       year: year ?? this.year,
       paintingDescription: paintingDescription ?? this.paintingDescription,
-      imagePath: imagePath ?? this.imagePath,
-      audioPath: audioPath ?? this.audioPath,
+      imagePath: identical(imagePath, _noChange)
+          ? this.imagePath
+          : imagePath as String?,
+      audioPath: identical(audioPath, _noChange)
+          ? this.audioPath
+          : audioPath as String?,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  static final Object _noChange = Object();
 
   @override
   String toString() {
@@ -98,7 +111,9 @@ class PaintingModel {
         'title: $title, '
         'artist: $artist, '
         'galleryId: $galleryId, '
-        'beaconId: $beaconId'
+        'beaconId: $beaconId, '
+        'imagePath: $imagePath, '
+        'audioPath: $audioPath'
         ')';
   }
 }
