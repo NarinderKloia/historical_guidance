@@ -14,6 +14,7 @@ import '../../../beacon/presentation/controllers/beacon_controller.dart';
 import '../../data/models/painting_model.dart';
 import '../controllers/painting_controller.dart';
 import '../widgets/beacon_dropdown.dart';
+import '../../../../shared/widgets/audio_picker_card.dart';
 
 class EditPaintingPage extends StatefulWidget {
   final PaintingModel painting;
@@ -43,6 +44,7 @@ class _EditPaintingPageState extends State<EditPaintingPage> {
 
   int? _selectedBeaconId;
   late String? _imagePath;
+  late String? _audioPath;
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _EditPaintingPageState extends State<EditPaintingPage> {
 
     _selectedBeaconId = widget.painting.beaconId;
     _imagePath = widget.painting.imagePath;
+    _audioPath = widget.painting.audioPath;
 
     _loadBeacons();
   }
@@ -115,6 +118,28 @@ class _EditPaintingPageState extends State<EditPaintingPage> {
     });
   }
 
+  Future<void> _pickAudio() async {
+    final path = await _mediaService.pickAudio();
+
+    if (path == null) return;
+
+    if (_audioPath != null) {
+      await _mediaService.deleteFile(_audioPath);
+    }
+
+    setState(() {
+      _audioPath = path;
+    });
+  }
+
+  Future<void> _removeAudio() async {
+    await _mediaService.deleteFile(_audioPath);
+
+    setState(() {
+      _audioPath = null;
+    });
+  }
+
   Future<void> _updatePainting() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -132,6 +157,7 @@ class _EditPaintingPageState extends State<EditPaintingPage> {
         paintingDescription: _descriptionController.text.trim(),
         beaconId: _selectedBeaconId,
         imagePath: _imagePath,
+        audioPath: _audioPath,
         updatedAt: DateTime.now().toIso8601String(),
       );
 
@@ -237,6 +263,13 @@ class _EditPaintingPageState extends State<EditPaintingPage> {
                 imagePath: _imagePath,
                 onPick: _pickImage,
                 onRemove: _removeImage,
+              ),
+              const SizedBox(height: 20),
+
+              AudioPickerCard(
+                audioPath: _audioPath,
+                onPick: _pickAudio,
+                onRemove: _removeAudio,
               ),
 
               const SizedBox(height: 30),
