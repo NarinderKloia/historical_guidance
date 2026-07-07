@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_guidance/core/mode_selection_page.dart';
 
 import 'features/museum/data/models/museum_model.dart';
 import 'features/museum/data/repositories/museum_repository.dart';
@@ -37,6 +38,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: const SenderPage());
+    return const MaterialApp(home: const ModeSelectionPage());
   }
 }
